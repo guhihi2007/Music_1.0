@@ -1,0 +1,75 @@
+package org.music;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toolbar;
+
+/**
+ * Created by Administrator on 2017/2/19.
+ */
+
+public class MainActivity extends Activity implements InitView ,View.OnClickListener{
+
+    private DrawerLayout drawerLayout;
+    private ListView listView;
+    private SeekBar seekBar;
+    private TextView textView;
+    private Button last_btn, play_btn, next_btn, play_mode_btn,add_btn;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        findView();
+        setListener();
+    }
+
+    @Override
+    public void findView() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
+        listView = (ListView) findViewById(R.id.main_lv);
+        seekBar = (SeekBar) findViewById(R.id.seekbar);
+        textView = (TextView) findViewById(R.id.textview);
+        last_btn = (Button) findViewById(R.id.last);
+        play_btn = (Button) findViewById(R.id.play);
+        next_btn = (Button) findViewById(R.id.next);
+        play_mode_btn = (Button) findViewById(R.id.play_mode);
+        add_btn = (Button) findViewById(R.id.add);
+
+    }
+
+    @Override
+    public void setListener() {
+        last_btn.setOnClickListener(this);
+        play_btn.setOnClickListener(this);
+        next_btn.setOnClickListener(this);
+        play_mode_btn.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.last:
+
+                break;
+            case R.id.play:
+
+                break;
+            case R.id.next:
+
+                break;
+        }
+    }
+}
+

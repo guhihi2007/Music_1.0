@@ -1,0 +1,27 @@
+<resources>
+
+        <!--<style name="AppTheme" parent="AppTheme.Base">-->
+        <!--</style>-->
+
+        <!--<style name="AppTheme.Base" parent="Theme.AppCompat">-->
+            <!--<item name="windowActionBar">false</item>-->
+            <!--<item name="android:windowNoTitle">true</item>-->
+
+            <!--<item name="android:fitsSystemWindows">true</item>-->
+            <!--&lt;!&ndash; toolbar栏的颜色 &ndash;&gt;-->
+            <!--<item name="colorPrimary">@color/accent_material_dark</item>-->
+            <!--&lt;!&ndash; 状态栏颜色 &ndash;&gt;-->
+            <!--<item name="colorPrimaryDark">@color/accent_material_light</item>-->
+            <!--&lt;!&ndash;窗口的背景颜色&ndash;&gt;-->
+            <!--<item name="android:windowBackground">@color/dim_foreground_material_dark</item>-->
+        <!--</style>-->
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+</resources>
