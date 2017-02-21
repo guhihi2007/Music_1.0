@@ -72,7 +72,7 @@
             android:layout_gravity="center"
             android:text="循环播放" />
         <Button
-            android:id="@+id/add"
+            android:id="@+id/addfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"

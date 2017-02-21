@@ -1,18 +1,14 @@
 package org.music;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 /**
  * Created by Administrator on 2017/2/19.
@@ -45,7 +41,7 @@ public class MainActivity extends Activity implements InitView ,View.OnClickList
         play_btn = (Button) findViewById(R.id.play);
         next_btn = (Button) findViewById(R.id.next);
         play_mode_btn = (Button) findViewById(R.id.play_mode);
-        add_btn = (Button) findViewById(R.id.add);
+        add_btn = (Button) findViewById(R.id.addfile);
 
     }
 
@@ -55,6 +51,7 @@ public class MainActivity extends Activity implements InitView ,View.OnClickList
         play_btn.setOnClickListener(this);
         next_btn.setOnClickListener(this);
         play_mode_btn.setOnClickListener(this);
+        add_btn.setOnClickListener(this);
     }
 
     @Override
@@ -68,6 +65,11 @@ public class MainActivity extends Activity implements InitView ,View.OnClickList
                 break;
             case R.id.next:
 
+                break;
+            case R.id.addfile:
+                Intent intent = new Intent();
+                intent.setClass(this,SearchActivity.class);
+                startActivity(intent);
                 break;
         }
     }
