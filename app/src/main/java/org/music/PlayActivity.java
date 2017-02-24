@@ -28,7 +28,7 @@ public class PlayActivity extends Activity implements InitView,View.OnClickListe
         setContentView(R.layout.activity_play);
         findView();
         setListener();
-        Data.ScanFile();
+        ScanMusic.ScanFile();
     }
 
     @Override

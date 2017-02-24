@@ -1,6 +1,5 @@
 package org.music;
 
-import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
@@ -10,17 +9,17 @@ import java.util.HashMap;
  * Created by Administrator on 2017/2/21.
  */
 
-public class Data {
+public class ScanMusic {
 
     public static final String SONG_NAME = "SONG";
     public static final String SONG_PATH = "PATH";
-//    private static Data data;
-//    private Data() {
+//    private static ScanMusic data;
+//    private ScanMusic() {
 //    }
 //
-//    public static Data getDataInstance() {
+//    public static ScanMusic getDataInstance() {
 //        if (data == null) {
-//            data = new Data();
+//            data = new ScanMusic();
 //        }
 //        return data;
 //    }
@@ -38,7 +37,10 @@ public class Data {
         if (files.length > 0) {
             for (int i = 0; i < files.length; i++) {
                 HashMap<String, String> map = new HashMap<>();
-                if (files[i].isFile() && files[i].getName().endsWith(".mp3")) {
+                if (files[i].isDirectory() && ! ( files[i].isHidden()) ){
+                    ScanFile();
+                }
+                if (files[i].isFile() && files[i].getName().endsWith(".mp3") && ! ( files[i].isHidden())) {
                     String name = files[i].getName();
                     String path = files[i].getAbsolutePath();
                     map.put(SONG_NAME, name);

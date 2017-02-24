@@ -60,22 +60,21 @@ public class MusicService extends Service {
             if (mediaPlayer == null) {
                 mediaPlayer = new MediaPlayer();
                 mediaPlayer.setDataSource(path);
-                mediaPlayer.prepare();
-                Log.v(TAG, "开始播放");
-            } else if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-                mediaPlayer.setDataSource(path);
-                mediaPlayer.prepare();
                 Log.v(TAG, "开始播放");
             } else {
+                if (mediaPlayer.isPlaying())
+                    mediaPlayer.stop();
+                Log.v(TAG, "停止播放");
+                mediaPlayer = new MediaPlayer();
                 mediaPlayer.setDataSource(path);
-                mediaPlayer.prepare();
                 Log.v(TAG, "开始播放");
             }
+            mediaPlayer.prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
         mediaPlayer.start();
+        mediaPlayer.setLooping(true);
     }
 
 }

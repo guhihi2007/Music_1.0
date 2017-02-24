@@ -1,11 +1,8 @@
 package org.music;
 
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -35,7 +30,7 @@ public class FileAdapter extends BaseAdapter {
     public FileAdapter(Context context) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
-        list = Data.ScanFile();
+        list = ScanMusic.ScanFile();
     }
 
     @Override
@@ -69,7 +64,7 @@ public class FileAdapter extends BaseAdapter {
         final String str_path = list.get(position).get(SONG_PATH);
         viewHolder.textView.setText(str_name);
         Log.v(TAG, "设置到ListView显示");
-        Log.v(TAG, str_path);
+//        Log.v(TAG, str_path);
         viewHolder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
