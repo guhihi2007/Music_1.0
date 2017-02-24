@@ -6,6 +6,6 @@
     <!--Main-->
     <include layout="@layout/drawer_main" />
     <!--Left-->
-    <include layout="@layout/drawer_left" />
+    <include layout="@layout/drawer_right" />
 
 </android.support.v4.widget.DrawerLayout>

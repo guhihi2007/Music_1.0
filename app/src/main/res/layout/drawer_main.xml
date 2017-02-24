@@ -6,7 +6,7 @@
 
 
     <ListView
-        android:id="@+id/main_lv"
+        android:id="@+id/play_lv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/main_lv"
+        android:layout_below="@id/play_lv"
         android:orientation="vertical"
         android:padding="25dp"
         android:layout_weight="1">
