@@ -28,7 +28,7 @@ public class Database {
     public void get_DB(Context context) {
         databaseHelper = new DatabaseHelper(context, DATABASE_NAME);
         sqLiteDatabase = databaseHelper.getReadableDatabase();
-        this.context=context;
+        this.context = context;
     }
 
     public void WriteData(String song_name, String song_path) {
@@ -53,19 +53,33 @@ public class Database {
                 String song_name = cursor.getString(1);
                 String song_path = cursor.getString(2);
                 map.put(TABLE_KEY, song_name);
-                map.put(TABLE_VALUES,song_path);
+                map.put(TABLE_VALUES, song_path);
             }
             cursor.close();
             list.add(map);
         }
-        Log.v(TAG,"把数据库拿出的数据map放入List");
+        Log.v(TAG, "把数据库拿出的数据map放入List");
         return list;
     }
 
-    public void insert_DB(String song_name,String song_path){
+    public boolean isExists(String song_name) {//判断数据库表中是否有歌曲 song_name;
+        boolean isExits = true;
+        String sql = "SELECT * FROM " + TABLE_NAME + " WHERE " + TABLE_KEY + "= ?";
+        if (sqLiteDatabase != null) {
+            Cursor cursor = sqLiteDatabase.rawQuery(sql, new String[]{song_name});
+            while (cursor.moveToNext()) {
+                Log.v(TAG, "进入While:找到匹配歌曲");
+                return true;
+            }
+            isExits = false;
+        }
+        return isExits;
+    }
+
+    public void insert_DB(String song_name, String song_path) {
         ContentValues cv = new ContentValues();
-        cv.put(song_name,song_path);
-        sqLiteDatabase.insert(TABLE_NAME,null,cv);
+        cv.put(song_name, song_path);
+        sqLiteDatabase.insert(TABLE_NAME, null, cv);
         sqLiteDatabase.close();
     }
 }

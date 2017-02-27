@@ -27,10 +27,10 @@ public class FileAdapter extends BaseAdapter {
     private Context context;
     private java.util.ArrayList<HashMap<String, String>> list;
 
-    public FileAdapter(Context context) {
+    public FileAdapter(Context context, int no) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
-        list = ScanMusic.ScanFile();
+        list = ScanMusic.ScanFile(no);
     }
 
     @Override
@@ -63,14 +63,15 @@ public class FileAdapter extends BaseAdapter {
         final String str_name = list.get(position).get(SONG_NAME);
         final String str_path = list.get(position).get(SONG_PATH);
         viewHolder.textView.setText(str_name);
-        Log.v(TAG, "设置到ListView显示");
+//        Log.v(TAG, "设置到ListView显示");
 //        Log.v(TAG, str_path);
+
         viewHolder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent send_path = new Intent();
                 send_path.setClass(context, MusicService.class);
-//                send_path.putExtra(SONG_NAME, str_name);
+                send_path.putExtra(SONG_NAME, str_name);
                 send_path.putExtra(SONG_PATH, str_path);
                 context.startService(send_path);
                 Toast.makeText(context, "正在播放....", Toast.LENGTH_SHORT).show();

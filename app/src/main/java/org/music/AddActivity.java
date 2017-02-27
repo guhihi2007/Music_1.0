@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by Administrator on 2017/2/20.
  */
 
-public class SearchActivity extends Activity implements InitView {
+public class AddActivity extends Activity implements InitView {
     private ListView listView;
     public static final String TAG = "MM";
     @Override
@@ -33,7 +33,7 @@ public class SearchActivity extends Activity implements InitView {
 
     @Override
     public void setListener() {
-        listView.setAdapter(new FileAdapter(this));
+//        listView.setAdapter(new FileAdapter(this));
     }
 
 
