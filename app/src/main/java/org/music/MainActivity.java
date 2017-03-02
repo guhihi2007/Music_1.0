@@ -42,7 +42,6 @@ public class MainActivity extends Activity implements InitView, View.OnClickList
         setContentView(R.layout.activity_main);
         findView();
         setListener();
-        list=ScanMusic.ScanFile(1);
 
     }
 

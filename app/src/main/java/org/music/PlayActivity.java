@@ -1,11 +1,16 @@
 package org.music;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -17,92 +22,75 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/2/22.
  */
 
 public class PlayActivity extends Activity implements InitView, View.OnClickListener {
-    private DrawerLayout drawerLayout;
-    private ListView play_lv, main_lv;
-    private SeekBar seekBar;
-    private TextView textView;
-    private Button  play_btn, A, B;
+
     public static final String TAG = "MM";
-    public static final String SONG_NAME = "SONG";
-    public static final String SONG_PATH = "PATH";
-    private java.util.ArrayList<HashMap<String, String>> list;
+    private static final String RECEIVER_ACTION="Receiver_action";
+    private TextView song_name_textView, total_time_textView, start_time_textView;
+    private java.util.ArrayList<Song> list;
     private MusicService musicService;
-    private String previous_song;
+    private DrawerLayout drawerLayout;
+    private MediaPlayer mediaPlayer;
+    private Service_Receiver service_receiver;
+    private Button play_btn, A, B;
+    private ListView play_lv;
+    private SeekBar seekBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         findView();
+//        list=Start_Thread_scanFile("/A");
         setListener();
-        list = ScanMusic.ScanFile(1);
-        bindService(new Intent(this, MusicService.class), new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                MusicService.MyBinder myBinder = (MusicService.MyBinder) service;
-                musicService = myBinder.getService();
-                musicService.setCallback(new Callback() {
-                    @Override
-                    public void Set_btn_Status(String isplay,String song_name) {
-                        Message message = new Message();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("1",isplay);
-                        bundle.putString("2",song_name);
-                        Log.v(TAG,"写入bundle");
-                        message.setData(bundle);
-                        handler.sendMessage(message);
+//        Log.v(TAG,"主线程:"+list+"");
+        Start_Bindservice();
+        service_receiver = new Service_Receiver();
+        registerReceiver(service_receiver);
 
-                    }
-                });
-            }
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-            }
-        }, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStart() {
-//        bindService(new Intent(this, MusicService.class), new ServiceConnection() {
-//            @Override
-//            public void onServiceConnected(ComponentName name, IBinder service) {
-//                MusicService.MyBinder myBinder = (MusicService.MyBinder)service;
-//                musicService = myBinder.getService();
-//                musicService.setCallback(new Callback() {
-//                    @Override
-//                    public void Set_btn_Status(String isplay) {
-//                        Message message = new Message();
-//                        message.obj=isplay;
-//                        handler.sendMessage(message);
-//                    }
-//                });
-//            }
-//            @Override
-//            public void onServiceDisconnected(ComponentName name) {
-//
-//            }
-//        },BIND_AUTO_CREATE);
-        super.onStart();
     }
 
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle bundle=msg.getData();
-            String btn=bundle.getString("1");
-            String name=bundle.getString("2");
-            Log.v(TAG,"拿出bundle");
-            play_btn.setText(btn);
-            textView.setText(name);
+//            super.handleMessage(msg);
+            int current_time=msg.what;
+            String current=getTime(current_time);
+            Log.v(TAG,"Handler内current："+current+"");
+            start_time_textView.setText(current);
+            seekBar.setProgress(current_time/1000);
+
+        }
+    };
+
+    private void Start_Bindservice() {
+        bindService(new Intent(this, MusicService.class),connection , BIND_AUTO_CREATE);
+
+    }
+    private ServiceConnection connection=new ServiceConnection() {
+        @Override
+        public void onServiceConnected(final ComponentName name, IBinder service) {
+            final MusicService.MyBinder myBinder = (MusicService.MyBinder) service;
+            musicService = myBinder.getService();
+            musicService.setCallback(new Callback() {
+                @Override
+                public void Set_Current(int current) {
+                    Message message= new Message();
+                    message.what=current;
+                    handler.sendMessage(message);
+                    Log.v(TAG,"Connect--------message.what:"+current+"");
+                }
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
         }
     };
 
@@ -111,34 +99,32 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         play_lv = (ListView) findViewById(R.id.play_lv);
         seekBar = (SeekBar) findViewById(R.id.seekbar);
-        textView = (TextView) findViewById(R.id.textview);
-        main_lv = (ListView) findViewById(R.id.main_lv);
-//        last_btn = (Button) findViewById(R.id.last);
+        song_name_textView = (TextView) findViewById(R.id.textview);
         play_btn = (Button) findViewById(R.id.play);
-//        next_btn = (Button) findViewById(R.id.next);
-//        play_mode_btn = (Button) findViewById(R.id.play_mode);
-//        add_btn = (Button) findViewById(R.id.addfile);
         A = (Button) findViewById(R.id.A);
         B = (Button) findViewById(R.id.B);
+        total_time_textView =(TextView)findViewById(R.id.end_time);
+        start_time_textView = (TextView)findViewById(R.id.start_time);
     }
 
     @Override
     public void setListener() {
         play_btn.setOnClickListener(this);
-        play_lv.setAdapter(new FileAdapter(this, 1));
+//        play_lv.setAdapter(new FileAdapter(this, list));
+        play_lv.setAdapter(new FileAdapter(this, Start_Thread_scanFile("/A")));
         A.setOnClickListener(this);
         B.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.A:
-                play_lv.setAdapter(new FileAdapter(this, 1));
+                play_lv.setAdapter(new FileAdapter(this, Start_Thread_scanFile("/A")));
+//        play_lv.setAdapter(new FileAdapter(this, list);
                 break;
             case R.id.play:
-                MediaPlayer mediaPlayer = musicService.getMediaPlayer();
+                mediaPlayer = musicService.getMediaPlayer();
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                     play_btn.setText("播放");
@@ -149,20 +135,50 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
                 }
                 break;
             case R.id.B:
-                play_lv.setAdapter(new FileAdapter(this, 2));
+                play_lv.setAdapter(new FileAdapter(this, Start_Thread_scanFile("/B")));
+//        play_lv.setAdapter(new FileAdapter(this, list);
                 break;
-//            case R.id.addfile:
-//                ScanMusic.ScanFile();
-//                Intent intent = new Intent();
-//                intent.setClass(this, AddActivity.class);
-//                startActivity(intent);
-//                break;
+        }
+    }
+    private ArrayList<Song> Start_Thread_scanFile(String pant) {
+        String root = "";
+        ScanMusic scanMusic = new ScanMusic();
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        list = scanMusic.Find_Mp3(root + pant);
+        return list;
+    }
+    private void registerReceiver(Service_Receiver service_receiver){
+        Log.v(TAG,"注册-----------------Receiver");
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(RECEIVER_ACTION);
+        registerReceiver(service_receiver,intentFilter);
+    }
+
+    private class Service_Receiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.v(TAG,"onReceive--------------执行");
+            String song_name=intent.getStringExtra("name");
+            int i=intent.getIntExtra("time",0);
+            song_name_textView.setText(song_name);
+            total_time_textView.setText(getTime(i));
+            seekBar.setMax(i/1000);
+            play_btn.setText("暂停");
         }
     }
 
     @Override
     protected void onDestroy() {
+        unbindService(connection);
+        unregisterReceiver(service_receiver);
         super.onDestroy();
+    }
+
+    public String getTime(int time) {
+        java.text.SimpleDateFormat format1 = new java.text.SimpleDateFormat("mm:ss");
+        return format1.format(time);
 
     }
 }

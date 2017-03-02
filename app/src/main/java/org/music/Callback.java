@@ -5,5 +5,5 @@ package org.music;
  */
 
 public interface Callback {
-    void Set_btn_Status(String isplay,String song_name);
+    void Set_Current(int current);
 }

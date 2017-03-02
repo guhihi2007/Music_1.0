@@ -23,10 +23,10 @@ public class Test extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test);
         Database database = new Database();
-        java.util.ArrayList<HashMap<String, String>> list= ScanMusic.ScanFile(1);
+//        java.util.ArrayList<HashMap<String, String>> list= ScanMusic.Find_Mp3(1);
         ListView listView = (ListView)findViewById(R.id.listview);
         TextView textView = (TextView)findViewById(R.id.songlist_tv);
-        listView.setAdapter(new FileAdapter(this,1));
+//        listView.setAdapter(new FileAdapter(this,1,list));
         database.get_DB(this);
 //        database.WriteData(list.get(0).get("SONG"),list.get(0).get("PATH"));
         boolean f= database.isExists("Cry on My Shoulder_Deutschland Sucht den Superstar.mp3");
