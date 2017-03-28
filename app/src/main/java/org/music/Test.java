@@ -23,7 +23,7 @@ public class Test extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test);
         Database database = new Database();
-//        java.util.ArrayList<HashMap<String, String>> list= ScanMusic.Find_Mp3(1);
+//        java.util.ArrayList<HashMap<String, String>> list= ScanMusic.find_Mp3(1);
         ListView listView = (ListView)findViewById(R.id.listview);
         TextView textView = (TextView)findViewById(R.id.songlist_tv);
 //        listView.setAdapter(new FileAdapter(this,1,list));

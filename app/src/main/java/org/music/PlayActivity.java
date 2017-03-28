@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -146,7 +145,7 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             root = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
-        list = scanMusic.Find_Mp3(root + pant);
+        list = scanMusic.find_Mp3(root + pant);
         return list;
     }
     private void registerReceiver(Service_Receiver service_receiver){

@@ -9,14 +9,14 @@ import java.io.File;
 
 public class ScanMusic {
     private Song song;
-    public  java.util.ArrayList<Song> Find_Mp3(String root) {
+    public  java.util.ArrayList<Song> find_Mp3(String root) {
         java.util.ArrayList<Song> list = new java.util.ArrayList<>();
         File file = new File(root);
         File[] files = file.listFiles();
         if (files.length > 0) {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory() && !(files[i].isHidden())) {
-                    Find_Mp3(files[i].getAbsolutePath());
+                    find_Mp3(files[i].getAbsolutePath());
                 } else if (files[i].isFile() && files[i].getName().endsWith(".mp3") && !(files[i].isHidden())) {
                     String fall_name = files[i].getName();
                     String name = fall_name.substring(0, fall_name.lastIndexOf("."));
