@@ -1,6 +1,8 @@
 package org.music;
 
 
+import android.util.Log;
+
 import java.io.File;
 
 /**
@@ -12,6 +14,7 @@ public class ScanMusic {
     public  java.util.ArrayList<Song> find_Mp3(String root) {
         java.util.ArrayList<Song> list = new java.util.ArrayList<>();
         File file = new File(root);
+        Log.v("MM","路径root:"+root);
         File[] files = file.listFiles();
         if (files.length > 0) {
             for (int i = 0; i < files.length; i++) {
