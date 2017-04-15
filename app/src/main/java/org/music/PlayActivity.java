@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -37,10 +38,11 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
     private DrawerLayout drawerLayout;
     private MediaPlayer mediaPlayer;
     private Service_Receiver service_receiver;
-    private Button play_btn, A, B;
-    private ListView play_lv;
+    private Button play_btn, play_mode, A, B;
+    private ListView play_lv, drawer_listview;
     private SeekBar seekBar;
     private Runnable runnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,19 +59,16 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
             int current_time = msg.what;
             String current = getTime(current_time);
             Log.v(TAG, "Handler内current：" + current + "");
             start_time_textView.setText(current);
             seekBar.setProgress(current_time / 1000);
-
         }
     };
 
     private void Start_Bindservice() {
         bindService(new Intent(this, MusicService.class), connection, BIND_AUTO_CREATE);
-
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -83,7 +82,7 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
                     Message message = new Message();
                     message.what = current;
                     handler.sendMessage(message);//实时发送播放进度
-                    Log.v(TAG, "Connect--------message.what:" + current + "");
+//                    Log.v(TAG, "Connect--------message.what:" + current + "");
                 }
             });
         }
@@ -100,18 +99,21 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
         seekBar = (SeekBar) findViewById(R.id.seekbar);
         song_name_textView = (TextView) findViewById(R.id.textview);
         play_btn = (Button) findViewById(R.id.play);
+        play_mode = (Button) findViewById(R.id.play_mode);
         A = (Button) findViewById(R.id.A);
         B = (Button) findViewById(R.id.B);
         total_time_textView = (TextView) findViewById(R.id.end_time);
         start_time_textView = (TextView) findViewById(R.id.start_time);
+        drawer_listview = (ListView) findViewById(R.id.drawer_listview);
     }
 
     @Override
     public void setListener() {
         play_btn.setOnClickListener(this);
-        play_lv.post(startThread("/A"));//用VIew.post(Runnable action)，在Runnable里面更新UI
+        play_mode.setOnClickListener(this);
         A.setOnClickListener(this);
         B.setOnClickListener(this);
+        play_lv.post(startThread("/A"));//用VIew.post(Runnable action)，在Runnable里面更新UI
     }
 
     private Runnable startThread(final String path) {
@@ -123,7 +125,8 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     root = Environment.getExternalStorageDirectory().getAbsolutePath();
                 }
-                final String  s_path= root + path;
+                final String s_path = root + path;
+                Log.v(TAG, s_path);
                 list = scanMusic.find_Mp3(s_path);
                 play_lv.setAdapter(new FileAdapter(PlayActivity.this, list));
             }
@@ -136,6 +139,12 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
         switch (v.getId()) {
             case R.id.A:
                 play_lv.post(startThread("/A"));
+//                Intent A = new Intent();
+//                A.setClass(this, MusicService.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("list", list);
+//                A.putExtras(bundle);
+//                this.startService(A);
                 break;
             case R.id.play:
                 mediaPlayer = musicService.getMediaPlayer();
@@ -150,10 +159,33 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
                 break;
             case R.id.B:
                 play_lv.post(startThread("/B"));
+//                Intent B = new Intent();
+//                B.setClass(this, MusicService.class);
+//                Bundle bundle1 = new Bundle();
+//                bundle1.putSerializable("list", list);
+//                B.putExtras(bundle1);
+//                this.startService(B);
+                break;
+            case R.id.play_mode:
+                playSingle();
                 break;
         }
     }
 
+    private void playSingle() {
+        if (mediaPlayer == null) {
+            mediaPlayer = musicService.getMediaPlayer();
+        }
+        if (mediaPlayer.isLooping()) {
+            mediaPlayer.setLooping(false);
+            play_mode.setText("单曲循环");
+            Toast.makeText(this, "播放一次", Toast.LENGTH_SHORT).show();
+        } else {
+            mediaPlayer.setLooping(true);
+            play_mode.setText("播放一次");
+            Toast.makeText(this, "单曲循环", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     //动态注册广播
     private void registerReceiver(Service_Receiver service_receiver) {

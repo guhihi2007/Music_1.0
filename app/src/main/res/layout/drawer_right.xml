@@ -5,5 +5,10 @@
     android:layout_gravity="end"
     android:background="#cccc">
 
+    <ListView
+        android:id="@+id/drawer_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
 
 </RelativeLayout>
