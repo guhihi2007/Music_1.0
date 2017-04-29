@@ -139,16 +139,14 @@ public class MusicService extends Service {
         this.callback = callback;
     }
 
-
-    class MyBinder extends Binder {
-        public MusicService getService() {
-            return MusicService.this;
-        }
-    }
-
     @Override
     public void onDestroy() {
         mediaPlayer.release();
         super.onDestroy();
+    }
+    class MyBinder extends Binder {
+        public MusicService getService() {
+            return MusicService.this;
+        }
     }
 }

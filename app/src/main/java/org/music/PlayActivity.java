@@ -74,7 +74,7 @@ public class PlayActivity extends Activity implements InitView, View.OnClickList
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(final ComponentName name, IBinder service) {
-            final MusicService.MyBinder myBinder = (MusicService.MyBinder) service;
+            MusicService.MyBinder myBinder = (MusicService.MyBinder) service;
             musicService = myBinder.getService();
             musicService.setCallback(new Callback() {
                 @Override
